@@ -143,7 +143,7 @@ def components_to_triples(shinjuku_lines):
         sp = s.split('>')
         if len(sp) == 1:
             continue
-            # since ecf files are only produced by transfer, they cannot possibly include
+            # since ecf files are only produced by transfer_, they cannot possibly include
             # components not found in sjk files
         if (len(sp) >= 3) and (sp[0].startswith('xs')) and (sp[2].startswith('xs')) and (sp[0] != sp[2]):
             op = int(sp[0][2:].split('_')[0])
