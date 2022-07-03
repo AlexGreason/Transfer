@@ -48,7 +48,8 @@ def multiprocessing_priority_queue(inqueue, outqueue):
                 inputids[input] = taskid
             if input in inputids and inputids[input] != taskid:
                 continue  # removed and not readded, so discarded.
-                # TODO: track this case to indicate that the target of the discarded task is also solved if the original task or its descendants are solved
+                # TODO: track this case to indicate that the target of the discarded task is also solved if the
+                #  original task or its descendants are solved
             didput = try_put(toadd, outqueue, delay=0.01)
             if not didput:
                 vals.put(toadd)
@@ -64,7 +65,7 @@ def handlequeue(taskqueue, vals, inputids, reported, singlereport, newitem=None,
             bitcount, _, _, input, maxcost, depth, taskid, target = toadd
             if input not in inputids:
                 inputids[input] = (
-                taskid, bitcount)  # note: the "bitcount" field can be either bitcount or bitcount-delta
+                    taskid, bitcount)  # note: the "bitcount" field can be either bitcount or bitcount-delta
             if input in inputids and inputids[input][0] != taskid and bitcount >= inputids[input][-1]:
                 return
             elif input in inputids and inputids[input][0] != taskid and bitcount < inputids[input][-1]:
@@ -85,23 +86,20 @@ def get_result(taskqueue, resqueue, vals, inputids, reported, singlereport):
 
 
 def workerfunc(triples, workqueue, resqueue):
-    # work queue has tuples (apgcode, maxcost, depth, id)
-    # maxcost is "must be made in at most this many gliders to be a reduction"
-    # depth is what iteration we're on
-    # id is just a global counter
-    # apgcode is self-explanatory
-    # to start with the workqueue is filled with (target object, current cost - 1, 0, id)
-    # at each step the worker function takes in a tuple, finds all components leading to apgcode, deduplicates on
-    # the input apgcodes, preferring the lower component costs, then puts (component, maxcost, depth + 1, id)
-    # in the result queue for each one.
-    # master function fills the original tasks, takes results from result queue, maintains mappings from apgcodes to maxcosts and
-    # from input objects to (output object, component)s. Takes in results: if the input object has a known cost which is lower than the maxcost-component cost,
-    # reports a reduction and traces it through the input -> output mapping to the relevant target object, then appends that
-    # to the lookup_synth result to get the full synthesis chain. If the input object is not in the apgcode->maxcost mapping, or if
-    # its maxcost-component cost is higher than the stored value, update the stored value and proceed, otherwise discard the result.
-    # if maxcost is 4 or higher or if the input has a known synth, save the component, if maxcost was 4 or higher put
-    # (input, maxcost - component cost, depth, newid) into workqueue, otherwise discard the result
-    # (since all the small 3-glider constellations are already in shinjuku)
+    # work queue has tuples (apgcode, maxcost, depth, id) maxcost is "must be made in at most this many gliders to be
+    # a reduction" depth is what iteration we're on id is just a global counter apgcode is self-explanatory to start
+    # with the workqueue is filled with (target object, current cost - 1, 0, id) at each step the worker function
+    # takes in a tuple, finds all components leading to apgcode, deduplicates on the input apgcodes, preferring the
+    # lower component costs, then puts (component, maxcost, depth + 1, id) in the result queue for each one. master
+    # function fills the original tasks, takes results from result queue, maintains mappings from apgcodes to
+    # maxcosts and from input objects to (output object, component)s. Takes in results: if the input object has a
+    # known cost which is lower than the maxcost-component cost, reports a reduction and traces it through the input
+    # -> output mapping to the relevant target object, then appends that to the lookup_synth result to get the full
+    # synthesis chain. If the input object is not in the apgcode->maxcost mapping, or if its maxcost-component cost
+    # is higher than the stored value, update the stored value and proceed, otherwise discard the result. if maxcost
+    # is 4 or higher or if the input has a known synth, save the component, if maxcost was 4 or higher put (input,
+    # maxcost - component cost, depth, newid) into workqueue, otherwise discard the result (since all the small
+    # 3-glider constellations are already in shinjuku)
     while True:
         task = workqueue.get()
         print("got task", task)
@@ -189,12 +187,8 @@ def synthesise_recurse(triples, objects, costsfile, outfile, improvefile, nthrea
                 print(
                     f"reached depth {depth} in {clock() - starttime} seconds and {id} nodes, queue length {vals.qsize()}")
             incost = cost(input)
-            if (size(input) > maximum_size or
-                density(input) < mindensity or
-                (size(input) - size(target)) > max_size_delta) and incost == 9999:
-                # if input not in maxcosts:
-                #     print(input, "rejected due to size")
-                #     maxcosts[input] = maxcost
+            if (size(input) > maximum_size or density(input) < mindensity or (size(input) - size(target)) >
+                max_size_delta) and incost == 9999:
                 continue
             if target in reported and singlereport:
                 continue
@@ -239,7 +233,8 @@ def synthesise_recurse(triples, objects, costsfile, outfile, improvefile, nthrea
                 synthchain = slock(seq)
                 print(
                     f"wanted {output} {truestr} in {maxcost + compcost}, "
-                    f"costs {incost + compcost if incost < 9999 else 'implied'}, reduces target {target}, found at depth {len(closure)}, "
+                    f"costs {incost + compcost if incost < 9999 else 'implied'}, reduces target {target}, "
+                    f"found at depth {len(closure)}, "
                     f"used in \n{synthchain.rle_string()}\n forwards closure {closure}")
                 # duplicate writes - for some reason some outputted synths weren't getting written, this is an attempt
                 # to hack around whatever's broken there
@@ -312,9 +307,9 @@ def find_target(input, uses, maxcosts, targets):
 
 
 def add_comps(comp1, comp2):
-    # TODO: need to determine the orientation and location of the output of comp1 and rotate and translate the gliders
-    # of comp2 appropriately, then find the duration of comp1, rewind the gliders of comp2 by that amount plus some margin
-    # and add the gliders into the first pat and use encode_comp on the result
+    # TODO: need to determine the orientation and location of the output of comp1 and rotate and translate the
+    #  gliders of comp2 appropriately, then find the duration of comp1, rewind the gliders of comp2 by that amount
+    #  plus some margin and add the gliders into the first pat and use encode_comp on the result
     input1, compcost1, output1 = decode_comp(comp1)
     input2, compcost2, output2 = decode_comp(comp2)
     if output1 != input2:
@@ -334,10 +329,8 @@ def run():
     prefix = f"{cgolroot}/transfer/{runname}"
     outfile = prefix + ".ecf"
     improvefile = prefix + "-improvements.sjk"
-    mosaicfile = prefix + ".rle"
     costsfile = prefix + ".txt"
     startindex = 191728
-    # target = 'xs313_4a96yv69a4zwcicxmqy1o4cy3c4oy1qmxciczg88gxraik8wh10cky1kc01hw8kiarxg88gz1221y062iaab8baaa98c89aaab8baai26y01221zy2oka43031p5lllllllllll5p13034akozy28kcw65210haq22622qah01256wck8zxokcy5ggp2qm0mq2pggy5ckozy9252wccxccw252'
     # print(f"target initial cost {cost(target)}")
     #
     stills = []
@@ -366,7 +359,6 @@ def run():
     targetcosts = {}
     for s in stills:
         targetcosts[s] = cost(s)
-    # stills = ['xs224_y1g8ka9eg8g0g8g0sik8gz08kit2ib42104v0v401248n45q48gzx4a98c88c8970798c88c89a511zg88q59h311319u0u913113h9ligz0125aiehik8g2v0v2g842t4kb421zy21243w1x1079521']
 
     # apgcodefile = open(f"{cgolroot}/censuses/21_bits_strict_apgcodes.txt", "r")
     # stills = []
@@ -392,7 +384,8 @@ def run():
     # DONE 7. priority queue should sort on size delta rather than pure size - or maybe it should be a toggle?
     # DONE 8. priority queue should sort first on size (priority desc) and secondly on maxcost (priority asc)
     # 9. track multiple targets properly - should report all improved targets when it reports an improvement, and if
-    #    a different target later comes across an alread-solved intermediate that should get reported (and written out) too
+    #    a different target later comes across an alread-solved intermediate that should get reported (and written out)
+    #    too
     # 10. track and write out cost deltas instead of/in addition to maxcosts, update target costs via overrides as it
     #     goes, report multiple times for a given target if the later ones are still *improvements* to that target
     # 11. Write a thing to go through all the costs files (using cost deltas) and generate an updated wantedcosts file

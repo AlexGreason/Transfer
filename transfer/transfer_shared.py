@@ -126,11 +126,7 @@ def apply_tree(pats, tr, queue=None, allow_noncanonical=False, check_rewind=Fals
                                     sols.add((c, compcost, input, output))
                                 except TypeError as e:
                                     print(f"got error {e} with values {(c, compcost, input, output)}")
-                            # if input.startswith("xp"):
-                            #     qstr = q.rle_string(filename=f"/home/exa/Documents/lifestuff/tempfiles/pattern{os.getpid()}.rle")
-                            #     print(f"Got an xp input with values {(qstr, c, compcost, input, output)}")
-                except (KeyError, ValueError) as e:
-                    # print("got error", e)
+                except (KeyError, ValueError):
                     continue
     return sols
 
@@ -158,7 +154,6 @@ def components_to_triples(shinjuku_lines):
     triples = []
     wech_cache = set([])
 
-    n5 = lt.pattern('bo$3o$bo!').centre()
     n9 = lt.pattern('3o$3o$3o!').centre()
     n21 = lt.pattern('b3o$5o$5o$5o$b3o!').centre()
 
@@ -238,7 +233,7 @@ def triples_to_tree(triples, min_delta=-9999, max_delta=9999):
 def convert_triples(triples, min_delta=-9999, max_delta=9999):
     if isinstance(triples, str):
         with open(triples) as f:
-            triples = [l.strip() for l in f]
+            triples = [line.strip() for line in f]
 
     if isinstance(triples, list, ):
         triples = triples_to_tree(triples, min_delta=min_delta, max_delta=max_delta)
@@ -249,5 +244,5 @@ def convert_triples(triples, min_delta=-9999, max_delta=9999):
 def convert_objects(objects):
     if isinstance(objects, str):
         with open(objects) as f:
-            objects = [l.strip() for l in f]
+            objects = [line.strip() for line in f]
     return objects

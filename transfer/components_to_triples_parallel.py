@@ -57,7 +57,6 @@ def components_to_triples_parallel(shinjuku_lines, nthreads=8, getrepresentative
     print(f"{len(s2s)} components to analyse. Using {nthreads} threads.")
     representatives = {}
     triples = {}
-    wech_cache = set([])
     with Pool(nthreads) as p:
         results = p.imap(process_comp, enumerate(s2s), chunksize=16)
 

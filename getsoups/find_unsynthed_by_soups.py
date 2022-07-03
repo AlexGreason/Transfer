@@ -3,6 +3,7 @@ import subprocess
 from cgol_utils import get_sorted_sls, cata_costs
 from cgol_utils.mosaics import *
 
+
 def run(command):
     process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
     output, error = process.communicate()

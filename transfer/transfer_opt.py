@@ -14,7 +14,7 @@ def workerfunc(triples, workqueue, resqueue, allow_noncanonical=False):
         task = workqueue.get()
         if task == "terminate":
             return
-        objects = [l for l in task[0] if l.startswith('xs')]
+        objects = [line for line in task[0] if line.startswith('xs')]
         pats = [a for target in objects for a in all_orientations(target)]
         apply_tree(pats, triples, resqueue, allow_noncanonical=allow_noncanonical)
         resqueue.put("done")
@@ -34,7 +34,7 @@ def synthesise_things(triples, objects, outfile, chunksize=64, nthreads=1, store
     workqueue = Queue()
     resqueue = Queue()
     args = (triples, workqueue, resqueue, not storeall)
-    workers = [Process(target=workerfunc, args=args) for i in range(nthreads)]
+    workers = [Process(target=workerfunc, args=args) for _ in range(nthreads)]
     subchunk = chunksize // 8
     for i in range(0, len(objects), subchunk):
         upper = min(i + subchunk, len(objects))
@@ -50,9 +50,10 @@ def synthesise_things(triples, objects, outfile, chunksize=64, nthreads=1, store
             if res == "done":
                 done += subchunk
                 print(
-                    f"Finished {min(done, len(objects))}/{len(objects)} in {int(clock() - starttime)} seconds, resqueue size {resqueue.qsize()}")
+                    f"Finished {min(done, len(objects))}/{len(objects)} in {int(clock() - starttime)} "
+                    f"seconds, resqueue size {resqueue.qsize()}")
                 if done >= len(objects):
-                    [workqueue.put("terminate") for w in workers]
+                    [workqueue.put("terminate") for _ in workers]
                     [w.terminate() for w in workers]
                     return
             else:
@@ -96,7 +97,8 @@ def run(nthreads, storeall=False, startat=0, chunksize=64, onlyunsynthed=False):
     stills = stills[startat:]
     print(f"{len(stills)} target objects")
 
-    outfile = f"{cgolroot}/transfer/transfer-{'unsynthed' if onlyunsynthed else 'all'}{'-storeall' if storeall else ''}-{get_date_string()}.sjk"
+    outfile = f"{cgolroot}/transfer/transfer-{'unsynthed' if onlyunsynthed else 'all'}" \
+              f"{'-storeall' if storeall else ''}-{get_date_string()}.sjk"
     synthesise_things(triplefile, stills, outfile=outfile, chunksize=chunksize, nthreads=nthreads, storeall=storeall)
 
 
@@ -135,7 +137,8 @@ if __name__ == "__main__":
     # write_triples(triplefile, nthreads=24, forcewrite=True)
     run(nthreads=24, storeall=True, startat=0, chunksize=512, onlyunsynthed=True)
 
-    # run_custom_comps(nthreads=24, storeall=False, startat=20000, chunksize=512, comps=read_file("/home/exa/Dropbox/Programming/Personal Projects/GameOfLife/Shinjuku/shinjuku/comp/recent_collisearch.sjk"))
+    # run_custom_comps(nthreads=24, storeall=False, startat=20000, chunksize=512,
+    #                  comps=read_file("/home/exa/Dropbox/Programming/Personal Projects/GameOfLife/Shinjuku/shinjuku/comp/recent_collisearch.sjk"))
     # objs = allsls
     # wanted = list(set(objs + parse_objects_file("/home/exa/Documents/lifestuff/censuses/all_unsynthed_with_soups.txt")))
     # collisearch_exa_bash.run(ngliders=2, nthreads=20, targets=objs, wanted=wanted)

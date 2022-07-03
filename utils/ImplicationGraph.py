@@ -5,9 +5,9 @@ def getimps(sources, targets, links):
     imps = {}
     for s in sources:
         imps[s] = set()
-    for l in links:
-        if l[0] in sources and l[1] in targets and l[0] != l[1]:
-            imps[l[0]].add(l[1])
+    for link in links:
+        if link[0] in sources and link[1] in targets and link[0] != link[1]:
+            imps[link[0]].add(link[1])
     return imps
 
 
@@ -97,8 +97,8 @@ if __name__ == "__main__":
     for f in costfiles:
         links += getlinks_ecf(f)
     inputs = set()
-    for l in links:
-        inputs.add(l[0])
+    for link in links:
+        inputs.add(link[0])
     inputs = set(list(inputs) + stills)
     stills = set(stills)
     imps = getimps(inputs, stills, links)

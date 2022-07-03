@@ -4,28 +4,26 @@ from time import perf_counter as clock
 from Shinjuku.shinjuku.gliderset import gset
 from Shinjuku.shinjuku.transcode import realise_comp, decode_comp
 from cgol_utils import get_sorted_sls, cost, trueSLs, min_paths, size, density, \
-    parse_objects_file, cgolroot, get_date_string
+    parse_objects_file, cgolroot, get_date_string, cata_costs
+from transfer.triples_utils import write_triples
 from transfer_shared import all_orientations, apply_tree, convert_objects, convert_triples
 
 
 def workerfunc(triples, workqueue, resqueue):
-    # work queue has tuples (apgcode, maxcost, depth, id)
-    # maxcost is "must be made in at most this many gliders to be a reduction"
-    # depth is what iteration we're on
-    # id is just a global counter
-    # apgcode is self-explanatory
-    # to start with the workqueue is filled with (target object, current cost - 1, 0, id)
-    # at each step the worker function takes in a tuple, finds all components leading to apgcode, deduplicates on
-    # the input apgcodes, preferring the lower component costs, then puts (component, maxcost, depth + 1, id)
-    # in the result queue for each one.
-    # master function fills the original tasks, takes results from result queue, maintains mappings from apgcodes to maxcosts and
-    # from input objects to (output object, component)s. Takes in results: if the input object has a known cost which is lower than the maxcost-component cost,
-    # reports a reduction and traces it through the input -> output mapping to the relevant target object, then appends that
-    # to the lookup_synth result to get the full synthesis chain. If the input object is not in the apgcode->maxcost mapping, or if
-    # its maxcost-component cost is higher than the stored value, update the stored value and proceed, otherwise discard the result.
-    # if maxcost is 4 or higher or if the input has a known synth, save the component, if maxcost was 4 or higher put
-    # (input, maxcost - component cost, depth, newid) into workqueue, otherwise discard the result
-    # (since all the small 3-glider constellations are already in shinjuku)
+    # work queue has tuples (apgcode, maxcost, depth, id) maxcost is "must be made in at most this many gliders to be
+    # a reduction" depth is what iteration we're on id is just a global counter apgcode is self-explanatory to start
+    # with the workqueue is filled with (target object, current cost - 1, 0, id) at each step the worker function
+    # takes in a tuple, finds all components leading to apgcode, deduplicates on the input apgcodes, preferring the
+    # lower component costs, then puts (component, maxcost, depth + 1, id) in the result queue for each one. master
+    # function fills the original tasks, takes results from result queue, maintains mappings from apgcodes to
+    # maxcosts and from input objects to (output object, component)s. Takes in results: if the input object has a
+    # known cost which is lower than the maxcost-component cost, reports a reduction and traces it through the input
+    # -> output mapping to the relevant target object, then appends that to the lookup_synth result to get the full
+    # synthesis chain. If the input object is not in the apgcode->maxcost mapping, or if its maxcost-component cost
+    # is higher than the stored value, update the stored value and proceed, otherwise discard the result. if maxcost
+    # is 4 or higher or if the input has a known synth, save the component, if maxcost was 4 or higher put (input,
+    # maxcost - component cost, depth, newid) into workqueue, otherwise discard the result (since all the small
+    # 3-glider constellations are already in shinjuku)
     while True:
         task = workqueue.get()
         if task == "terminate":
@@ -57,7 +55,7 @@ def synthesise_recurse(triples, objects, costsfile, outfile, nthreads=1, maximum
     workqueue = Queue()
     resqueue = Queue()
     args = (triples, workqueue, resqueue)
-    workers = [Process(target=workerfunc, args=args) for i in range(nthreads)]
+    workers = [Process(target=workerfunc, args=args) for _ in range(nthreads)]
     # (apgcode, maxcost, depth, id)
     id = 0
     maxcosts = {}
@@ -71,7 +69,6 @@ def synthesise_recurse(triples, objects, costsfile, outfile, nthreads=1, maximum
     reported = set()
     starttime = clock()
     wroteout = set()
-    wrotecosts = {}
     print("Starting workers")
     [w.start() for w in workers]
     currdepth = 0
@@ -83,7 +80,8 @@ def synthesise_recurse(triples, objects, costsfile, outfile, nthreads=1, maximum
             if depth > currdepth:
                 currdepth = depth
                 print(
-                    f"reached depth {depth} in {clock() - starttime} seconds and {id} nodes, queue length {workqueue.qsize()}")
+                    f"reached depth {depth} in {clock() - starttime} seconds and {id} nodes, "
+                    f"queue length {workqueue.qsize()}")
             incost = cost(input)
             if (size(input) > maximum_size or
                 density(input) < mindensity or
@@ -111,7 +109,8 @@ def synthesise_recurse(triples, objects, costsfile, outfile, nthreads=1, maximum
                     id += 1
                     if id % 100 == 0:
                         print(
-                            f"traversed {id} nodes in {clock() - starttime} seconds, {len(maxcosts)} unique intermediates, queue length {workqueue.qsize()}")
+                            f"traversed {id} nodes in {clock() - starttime} seconds, "
+                            f"{len(maxcosts)} unique intermediates, queue length {workqueue.qsize()}")
                     task = (input, maxcost, depth + 1, id, target)
                     workqueue.put(task)
             if maxcost >= incost and (target not in reported or not singlereport):
@@ -121,7 +120,8 @@ def synthesise_recurse(triples, objects, costsfile, outfile, nthreads=1, maximum
                 truestr = "(true)" if output in trueSLs else "(pseudo)"
                 print(
                     f"wanted {output} {truestr} in {maxcost + compcost}, "
-                    f"costs {incost + compcost}, used with \n{q.rle_string()}\n forwards closure {trace_forwards(output, uses, maxcosts)}")
+                    f"costs {incost + compcost}, used with \n{q.rle_string()}\n "
+                    f"forwards closure {trace_forwards(output, uses, maxcosts)}")
                 # duplicate writes - for some reason some outputted synths weren't getting written, this is an attempt
                 # to hack around whatever's broken there
                 g.write(f'{compstr}\n')
@@ -154,7 +154,8 @@ def find_target(input, uses, maxcosts, targets):
 
 def add_comps(comp1, comp2):
     # TODO: need to determine the orientation and location of the output of comp1 and rotate and translate the gliders
-    # of comp2 appropriately, then find the duration of comp1, rewind the gliders of comp2 by that amount plus some margin
+    # of comp2 appropriately, then find the duration of comp1,
+    # rewind the gliders of comp2 by that amount plus some margin
     # and add the gliders into the first pat and use encode_comp on the result
     input1, compcost1, output1 = decode_comp(comp1)
     input2, compcost2, output2 = decode_comp(comp2)
@@ -169,13 +170,12 @@ def run():
     triplefile = f"{cgolroot}/transfer/triples.txt"
     prefix = f"{cgolroot}/transfer/all-unsynthed-with-soups-breadthfirst-{get_date_string()}"
     outfile = prefix + ".sjk"
-    mosaicfile = prefix + ".rle"
     costsfile = prefix + ".txt"
     write_triples(triplefile, nthreads=20)
     startindex = 191728
     target = "xq5_ug1hmgc865da808ad568cgmh1guz124w6yb6w421"
 
-    stills = get_sorted_sls(min_paths, trueSLs)
+    stills = get_sorted_sls(min_paths, trueSLs, cata_costs)
     # stills = filter_by_uses(stills, min_uses=200)
     stills = []
     # min_paths = dijkstra()
