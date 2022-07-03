@@ -4,7 +4,6 @@ from Shinjuku.shinjuku import lt, lt4
 from Shinjuku.shinjuku.checks import rewind_check
 from Shinjuku.shinjuku.transcode import realise_comp, encode_comp
 from Shinjuku.shinjuku.gliderset import gset
-from cgol_utils import unescapenewlines
 from cgol_utils.paths import cgolroot
 
 

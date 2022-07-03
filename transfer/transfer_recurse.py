@@ -5,7 +5,7 @@ from Shinjuku.shinjuku import lt
 from Shinjuku.shinjuku.checks import rewind_check
 from Shinjuku.shinjuku.transcode import realise_comp, decode_comp, encode_comp
 from Shinjuku.shinjuku.gliderset import gset
-from cgolutils import get_sorted_sls, write_triples, cost, trueSLs, min_paths, expensive_stills, size, density, \
+from cgol_utils import get_sorted_sls, write_triples, cost, trueSLs, min_paths, expensive_stills, size, density, \
     parse_objects_file, cgolroot, get_inputs, filter_by_uses, get_date_string
 from transfer_shared import all_orientations, apply_tree, convert_objects, convert_triples
 

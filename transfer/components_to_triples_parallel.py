@@ -1,5 +1,5 @@
 from Shinjuku.shinjuku import lt, lt4
-from Shinjuku.shinjuku.transcode import realise_comp, encode_comp, decode_comp
+from Shinjuku.shinjuku.transcode import realise_comp, decode_comp
 from multiprocessing import Pool
 n9 = lt.pattern('3o$3o$3o!').centre()
 n21 = lt.pattern('b3o$5o$5o$5o$b3o!').centre()

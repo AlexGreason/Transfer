@@ -6,8 +6,9 @@ from time import perf_counter as clock
 from Shinjuku.shinjuku.gliderset import gset
 from Shinjuku.shinjuku.search import slock
 from Shinjuku.shinjuku.transcode import realise_comp, decode_comp, encode_comp
-from cgolutils import get_sorted_sls, write_triples, cost, trueSLs, min_paths, size, density, \
+from cgol_utils import get_sorted_sls, cost, trueSLs, min_paths, size, density, \
     cgolroot, getpop, get_date_string, escapenewlines, backtrack, parse_objects_file, expensive_stills, cata_costs
+from transfer.triples_utils import write_triples
 from transfer_shared import all_orientations, apply_tree, convert_objects, convert_triples
 
 
@@ -339,7 +340,7 @@ def run():
     # print(f"target initial cost {cost(target)}")
     #
     stills = []
-    from cgolutils import allsls
+    from cgol_utils import allsls
     # stills = list(set(parse_objects_file("/home/exa/Documents/lifestuff/censuses/all_unsynthed_with_soups.txt")))
     # stills = ["xs16_660gs2qr"]
     # stills = [x for x in stills if getpop(x) <= 40]

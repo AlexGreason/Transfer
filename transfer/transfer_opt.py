@@ -2,11 +2,10 @@ from multiprocessing import Process, Queue
 from time import perf_counter as clock
 
 from Shinjuku.shinjuku.checks import rewind_check
-from cgolutils import cost, min_paths, overrides, trueSLs, get_sorted_sls, get_date_string, \
-    write_special_triples, write_triples, printuses, cgolroot, filter_by_uses, makemosaic, parse_objects_file, allsls, \
-    cata_costs, read_file
+from cgol_utils import cost, min_paths, overrides, trueSLs, get_sorted_sls, get_date_string, \
+    printuses, cgolroot, makemosaic, parse_objects_file, cata_costs
 from Shinjuku.shinjuku.transcode import realise_comp, decode_comp, encode_comp
-from componentSearch import collisearch_exa_bash
+from transfer.triples_utils import write_triples, write_special_triples
 from transfer_shared import all_orientations, apply_tree, split_comp, convert_objects, convert_triples
 
 

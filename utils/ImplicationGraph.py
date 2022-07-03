@@ -1,4 +1,4 @@
-from cgolutils import cost, expensive_stills, min_paths, cgolroot
+from cgol_utils import cost, expensive_stills, min_paths, cgolroot
 
 
 def getimps(sources, targets, links):
