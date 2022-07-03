@@ -1,7 +1,6 @@
 from Shinjuku.shinjuku import lt, lt4
 from Shinjuku.shinjuku.transcode import realise_comp, encode_comp, decode_comp
 from multiprocessing import Pool
-
 n9 = lt.pattern('3o$3o$3o!').centre()
 n21 = lt.pattern('b3o$5o$5o$5o$b3o!').centre()
 
@@ -45,7 +44,7 @@ def components_to_triples_parallel(shinjuku_lines, nthreads=8, getrepresentative
         sp = s.split('>')
         if len(sp) == 1:
             continue
-            # since ecf files are only produced by transfer_, they cannot possibly include
+            # since ecf files are only produced by transfer, they cannot possibly include
             # components not found in sjk files
         if (len(sp) >= 3) and (sp[0].startswith('xs')) and (sp[2].startswith('xs')) and (sp[0] != sp[2]):
             op = int(sp[0][2:].split('_')[0])

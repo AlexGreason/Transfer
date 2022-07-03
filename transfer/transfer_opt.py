@@ -131,7 +131,7 @@ if __name__ == "__main__":
     starttime = clock()
     # run_custom_comps(nthreads=4, comps=['xs19_j9ari96z11>8 -2 22 -1/-18 5 -13 10//@0L-10 4>xs20_32qj8r9ic'
     #                                     ])
-    # triplefile = f"{cgolroot}/transfer_/triples.txt"
+    # triplefile = f"{cgolroot}/transfer/triples.txt"
     # write_triples(triplefile, nthreads=24, forcewrite=True)
     run(nthreads=24, storeall=True, startat=0, chunksize=512, onlyunsynthed=True)
 
@@ -139,21 +139,21 @@ if __name__ == "__main__":
     # objs = allsls
     # wanted = list(set(objs + parse_objects_file("/home/exa/Documents/lifestuff/censuses/all_unsynthed_with_soups.txt")))
     # collisearch_exa_bash.run(ngliders=2, nthreads=20, targets=objs, wanted=wanted)
-    # triplefile = f"{cgolroot}/transfer_/triples.txt"
+    # triplefile = f"{cgolroot}/transfer/triples.txt"
     # write_triples(triplefile)
     # stills = parse_objects_file("/home/exa/Documents/lifestuff/censuses/all_unsynthed_with_soups.txt")
     # print(f"{len(stills)} target objects")
     #
-    # outfile = f"{cgolroot}/transfer_/transfer_-unsynthed-with-soups-{get_date_string()}.sjk"
+    # outfile = f"{cgolroot}/transfer/transfer-unsynthed-with-soups-{get_date_string()}.sjk"
     # synthesise_things(triplefile, stills, outfile=outfile, chunksize=64, nthreads=8, storeall=False)
 
     endtime = clock()
     print("Finished in %.2f seconds" % (clock() - starttime))
-    # filtercomps(min_paths, "/home/exa/Documents/lifestuff/transfer_/minpaths.sjk", "/home/exa/Documents/lifestuff/transfer_/minpaths-filt.sjk")
-    # write_minpaths(min_paths, getsortedsls(min_paths, true), "/home/exa/Documents/lifestuff/transfer_/minpaths.sjk")
+    # filtercomps(min_paths, "/home/exa/Documents/lifestuff/transfer/minpaths.sjk", "/home/exa/Documents/lifestuff/transfer/minpaths-filt.sjk")
+    # write_minpaths(min_paths, getsortedsls(min_paths, true), "/home/exa/Documents/lifestuff/transfer/minpaths.sjk")
     # prevstills = getallprev(9)
     # stills = parse_objects_file("/home/exa/Documents/lifestuff/censuses/unsynthed_allsymms.txt")
-    # outfile = "/home/exa/Documents/lifestuff/transfer_/souped.sjk"
+    # outfile = "/home/exa/Documents/lifestuff/transfer/souped.sjk"
     # out = open(outfile, "w")
     # min_paths = dijkstra()
     # for s in stills:

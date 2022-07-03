@@ -168,8 +168,8 @@ def add_comps(comp1, comp2):
 
 
 def run():
-    triplefile = f"{cgolroot}/transfer_/triples.txt"
-    prefix = f"{cgolroot}/transfer_/all-unsynthed-with-soups-breadthfirst-{get_date_string()}"
+    triplefile = f"{cgolroot}/transfer/triples.txt"
+    prefix = f"{cgolroot}/transfer/all-unsynthed-with-soups-breadthfirst-{get_date_string()}"
     outfile = prefix + ".sjk"
     mosaicfile = prefix + ".rle"
     costsfile = prefix + ".txt"
@@ -190,7 +190,7 @@ def run():
     #stills += ["xs20_03p6426z17853"]
     #stills = ['xs30_wc93ggz64138d0mk13zy2641']
     # stills = []
-    # prefix = f"{cgolroot}/transfer_/specialrequest"
+    # prefix = f"{cgolroot}/transfer/specialrequest"
     # for x in ["2", "2_2", "2_3"]:
     #     stills += get_inputs(f"{prefix}_{x}.sjk")
     # stills += ["xs29_0g8o0u1eoz34iq9871"]
@@ -237,18 +237,18 @@ allcomps = []
 for o in objects:
     print(o)
     allcomps += get_synth(min_paths, o)
-output = open("/home/exa/Documents/lifestuff/transfer_/improved.sjk", "w")
+output = open("/home/exa/Documents/lifestuff/transfer/improved.sjk", "w")
 for a in set(allcomps):
     output.write(a + "\n")
 from transfer_recurse import *
-a = makemosaic_reachable("/home/exa/Documents/lifestuff/transfer_/improved.sjk", sidelen=50, spacing=200)
+a = makemosaic_reachable("/home/exa/Documents/lifestuff/transfer/improved.sjk", sidelen=50, spacing=200)
 
 
 from utils import *
 from mosaics import *
 stills = parse_objects_file("/home/exa/Documents/lifestuff/censuses/unsynthed_c1.txt")
 allcomps = objects_minpaths(min_paths, stills)
-output = open("/home/exa/Documents/lifestuff/transfer_/improved.sjk", "w")
+output = open("/home/exa/Documents/lifestuff/transfer/improved.sjk", "w")
 for a in set(allcomps):
     output.write(a + "\n")
 """

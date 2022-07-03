@@ -1,6 +1,6 @@
 [submodule "Shinjuku"]
 	path = Shinjuku
-	url = https://gitlab.com/parclytaxel/Shinjuku.git
+	url = https://gitlab.com/alexgreason1/Shinjuku.git
 [submodule "cgol_utils"]
 	path = cgol_utils
 	url = https://github.com/AlexGreason/cgol_utils.git
