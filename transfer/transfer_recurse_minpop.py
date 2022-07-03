@@ -6,8 +6,8 @@ from time import perf_counter as clock
 from Shinjuku.shinjuku.gliderset import gset
 from Shinjuku.shinjuku.search import slock
 from Shinjuku.shinjuku.transcode import realise_comp, decode_comp, encode_comp
-from cgol_utils import get_sorted_sls, cost, trueSLs, min_paths, size, density, \
-    cgolroot, getpop, get_date_string, escapenewlines, backtrack, parse_objects_file, expensive_stills, cata_costs
+from cgol_utils import cost, trueSLs, min_paths, size, density, \
+    cgolroot, getpop, get_date_string, escapenewlines, expensive_stills
 from transfer.triples_utils import write_triples
 from transfer_shared import all_orientations, apply_tree, convert_objects, convert_triples
 
@@ -63,7 +63,8 @@ def handlequeue(taskqueue, vals, inputids, reported, singlereport, newitem=None,
             toadd = vals.get()
             bitcount, _, _, input, maxcost, depth, taskid, target = toadd
             if input not in inputids:
-                inputids[input] = (taskid, bitcount)  # note: the "bitcount" field can be either bitcount or bitcount-delta
+                inputids[input] = (
+                taskid, bitcount)  # note: the "bitcount" field can be either bitcount or bitcount-delta
             if input in inputids and inputids[input][0] != taskid and bitcount >= inputids[input][-1]:
                 return
             elif input in inputids and inputids[input][0] != taskid and bitcount < inputids[input][-1]:
@@ -179,8 +180,9 @@ def synthesise_recurse(triples, objects, costsfile, outfile, improvefile, nthrea
     with open(outfile, 'a') as g, open(costsfile, 'a') as costsf, open(improvefile, 'a') as improvef:
         g.write("\n")
         while True:
-            component, maxcost, depth, _, target = get_result(taskqueue, resqueue, vals, inputids, reported, singlereport)
-            
+            component, maxcost, depth, _, target = get_result(taskqueue, resqueue, vals, inputids, reported,
+                                                              singlereport)
+
             compstr, compcost, input, output = component
             if depth > currdepth:
                 currdepth = depth
@@ -215,7 +217,7 @@ def synthesise_recurse(triples, objects, costsfile, outfile, improvefile, nthrea
                         print(
                             f"traversed {id} nodes in {clock() - starttime} seconds,"
                             f" {len(maxcosts)} unique intermediates, queue length {vals.qsize()}")
-                    task = (getpop(input) if not sortbydelta else getpop(input)-getpop(target),
+                    task = (getpop(input) if not sortbydelta else getpop(input) - getpop(target),
                             -maxcost, getpop(input), input, maxcost, depth + 1, id, target)
                     if depth + 1 < max_depth:  # maxdepth 1 only allows tasks at depth 0, etc
                         handlequeue(taskqueue, vals, inputids, reported, singlereport, newitem=task)
@@ -323,7 +325,6 @@ def add_comps(comp1, comp2):
 
 
 def run():
-
     # runname = f"unsynthed-maxsizedelta3-mindense0.3-{get_date_string()}"
     # runname = "expensive-xs14-18-mindense-030"
     # runname = f"specialrequest-{get_date_string(hour=True, minute=True)}"
@@ -340,7 +341,6 @@ def run():
     # print(f"target initial cost {cost(target)}")
     #
     stills = []
-    from cgol_utils import allsls
     # stills = list(set(parse_objects_file("/home/exa/Documents/lifestuff/censuses/all_unsynthed_with_soups.txt")))
     # stills = ["xs16_660gs2qr"]
     # stills = [x for x in stills if getpop(x) <= 40]
@@ -366,7 +366,7 @@ def run():
     targetcosts = {}
     for s in stills:
         targetcosts[s] = cost(s)
-    #stills = ['xs224_y1g8ka9eg8g0g8g0sik8gz08kit2ib42104v0v401248n45q48gzx4a98c88c8970798c88c89a511zg88q59h311319u0u913113h9ligz0125aiehik8g2v0v2g842t4kb421zy21243w1x1079521']
+    # stills = ['xs224_y1g8ka9eg8g0g8g0sik8gz08kit2ib42104v0v401248n45q48gzx4a98c88c8970798c88c89a511zg88q59h311319u0u913113h9ligz0125aiehik8g2v0v2g842t4kb421zy21243w1x1079521']
 
     # apgcodefile = open(f"{cgolroot}/censuses/21_bits_strict_apgcodes.txt", "r")
     # stills = []

@@ -2,9 +2,9 @@ from multiprocessing import Process, Queue
 from time import perf_counter as clock
 
 from Shinjuku.shinjuku.checks import rewind_check
+from Shinjuku.shinjuku.transcode import realise_comp, decode_comp, encode_comp
 from cgol_utils import cost, min_paths, overrides, trueSLs, get_sorted_sls, get_date_string, \
     printuses, cgolroot, makemosaic, parse_objects_file, cata_costs
-from Shinjuku.shinjuku.transcode import realise_comp, decode_comp, encode_comp
 from transfer.triples_utils import write_triples, write_special_triples
 from transfer_shared import all_orientations, apply_tree, split_comp, convert_objects, convert_triples
 
@@ -49,7 +49,8 @@ def synthesise_things(triples, objects, outfile, chunksize=64, nthreads=1, store
             res = resqueue.get()
             if res == "done":
                 done += subchunk
-                print(f"Finished {min(done, len(objects))}/{len(objects)} in {int(clock() - starttime)} seconds, resqueue size {resqueue.qsize()}")
+                print(
+                    f"Finished {min(done, len(objects))}/{len(objects)} in {int(clock() - starttime)} seconds, resqueue size {resqueue.qsize()}")
                 if done >= len(objects):
                     [workqueue.put("terminate") for w in workers]
                     [w.terminate() for w in workers]

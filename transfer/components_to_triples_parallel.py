@@ -1,6 +1,8 @@
+from multiprocessing import Pool
+
 from Shinjuku.shinjuku import lt, lt4
 from Shinjuku.shinjuku.transcode import realise_comp, decode_comp
-from multiprocessing import Pool
+
 n9 = lt.pattern('3o$3o$3o!').centre()
 n21 = lt.pattern('b3o$5o$5o$5o$b3o!').centre()
 
@@ -67,9 +69,9 @@ def components_to_triples_parallel(shinjuku_lines, nthreads=8, getrepresentative
             if wech2 in triples:
                 existing = representatives[wech2]
                 if inputpop < representatives[wech2][1]:
-                    representatives[wech2] = (compstr, inputpop, existing[2]+1)
+                    representatives[wech2] = (compstr, inputpop, existing[2] + 1)
                 else:
-                    representatives[wech2] = (existing[0], existing[1], existing[2]+1)
+                    representatives[wech2] = (existing[0], existing[1], existing[2] + 1)
                 if ngliders < triples[wech2][1]:
                     triples[wech2] = (triple, ngliders)
                     existing = representatives[wech2]

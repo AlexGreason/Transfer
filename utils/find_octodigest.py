@@ -5,15 +5,15 @@ def load_digests(digestfile):
     digests = []
     file = open(digestfile, "rb")
     size = os.stat(digestfile).st_size
-    ncolls = size//2048
-    if size%2048 != 0:
+    ncolls = size // 2048
+    if size % 2048 != 0:
         print("invalid digest file!")
         raise ValueError
     for i in range(ncolls):
         curr = []
         val = file.read(2048)
         for j in range(256):
-            curr.append(val[8*j:8*(j+1)])
+            curr.append(val[8 * j:8 * (j + 1)])
         digests.append(curr)
     return digests
 
@@ -22,15 +22,15 @@ def lookup_no_dictionary(digest, digestfile):
     digestbytes = to_bytes(digest)
     file = open(digestfile, "rb")
     size = os.stat(digestfile).st_size
-    ncolls = size//2048
+    ncolls = size // 2048
     results = []
-    if size%2048 != 0:
+    if size % 2048 != 0:
         print("invalid digest file!")
         raise ValueError
     for i in range(ncolls):
         val = file.read(2048)
         for j in range(256):
-            thisdigest = val[8*j:8*(j+1)]
+            thisdigest = val[8 * j:8 * (j + 1)]
             if thisdigest == digestbytes:
                 results.append((i, j))
     return results
@@ -51,6 +51,7 @@ def get_rle_by_index_from_file(index, rlefile):
                 tmp.append(line)
     return False
 
+
 def load_rles(rlefile):
     rles = []
     with open(rlefile, "r") as f:
@@ -63,6 +64,7 @@ def load_rles(rlefile):
                 tmp.append(line)
     return rles
 
+
 def digests_dict(digests):
     result = {}
     for i in range(len(digests)):
@@ -74,13 +76,14 @@ def digests_dict(digests):
             result[val].append((i, j))
     return result
 
+
 def to_bytes(digeststr):
     vals = digeststr.split(" ")
     return bytes([int(x) for x in vals])
 
+
 def lookup(bytestr, ddict, rles):
     print(rles[ddict[to_bytes(bytestr)][0][0]])
-
 
 
 if __name__ == "__main__":

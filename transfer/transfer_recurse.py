@@ -1,12 +1,10 @@
-import os
 from multiprocessing import Process, Queue
 from time import perf_counter as clock
-from Shinjuku.shinjuku import lt
-from Shinjuku.shinjuku.checks import rewind_check
-from Shinjuku.shinjuku.transcode import realise_comp, decode_comp, encode_comp
+
 from Shinjuku.shinjuku.gliderset import gset
-from cgol_utils import get_sorted_sls, write_triples, cost, trueSLs, min_paths, expensive_stills, size, density, \
-    parse_objects_file, cgolroot, get_inputs, filter_by_uses, get_date_string
+from Shinjuku.shinjuku.transcode import realise_comp, decode_comp
+from cgol_utils import get_sorted_sls, cost, trueSLs, min_paths, size, density, \
+    parse_objects_file, cgolroot, get_date_string
 from transfer_shared import all_orientations, apply_tree, convert_objects, convert_triples
 
 
@@ -178,17 +176,17 @@ def run():
     target = "xq5_ug1hmgc865da808ad568cgmh1guz124w6yb6w421"
 
     stills = get_sorted_sls(min_paths, trueSLs)
-    #stills = filter_by_uses(stills, min_uses=200)
+    # stills = filter_by_uses(stills, min_uses=200)
     stills = []
     # min_paths = dijkstra()
     # used_by = {}
     # backtrack(target, set([]), used_by, min_paths)
     # stills = list(used_by)
     # for i in range(16):
-    #stills += expensive_stills(min_paths, cells=20, cost=999)
-    #stills = parse_objects_file("/home/exa/Documents/lifestuff/censuses/unsynthed_c1.txt")
-    #stills += ["xs20_03p6426z17853"]
-    #stills = ['xs30_wc93ggz64138d0mk13zy2641']
+    # stills += expensive_stills(min_paths, cells=20, cost=999)
+    # stills = parse_objects_file("/home/exa/Documents/lifestuff/censuses/unsynthed_c1.txt")
+    # stills += ["xs20_03p6426z17853"]
+    # stills = ['xs30_wc93ggz64138d0mk13zy2641']
     # stills = []
     # prefix = f"{cgolroot}/transfer/specialrequest"
     # for x in ["2", "2_2", "2_3"]:
@@ -206,7 +204,8 @@ def run():
     stills = [x for x in stills if cost(x) > 999]
     stills = list(set(stills))
     print("%s target objects" % len(stills))
-    synthesise_recurse(triplefile, stills, costsfile, outfile=outfile, nthreads=22, maximum_cost=9999, maximum_size=9999,
+    synthesise_recurse(triplefile, stills, costsfile, outfile=outfile, nthreads=22, maximum_cost=9999,
+                       maximum_size=9999,
                        max_size_delta=9999, mindensity=0, singlereport=True, hopeless_threshold=9)
     # makemosaic_reachable(outfile, sidelen=30, spacing=300)
 

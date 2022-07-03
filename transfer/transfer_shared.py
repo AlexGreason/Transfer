@@ -2,8 +2,8 @@ import os
 
 from Shinjuku.shinjuku import lt, lt4
 from Shinjuku.shinjuku.checks import rewind_check
-from Shinjuku.shinjuku.transcode import realise_comp, encode_comp
 from Shinjuku.shinjuku.gliderset import gset
+from Shinjuku.shinjuku.transcode import realise_comp, encode_comp
 from cgol_utils.paths import cgolroot
 
 
@@ -23,7 +23,8 @@ def all_orientations(pat):
 
     return pats
 
-#@profile
+
+# @profile
 def split_comp(comp):
     """Splits and returns the glider set and the constellation of the component.
     Assumes the gliders are well-spaced and the lifetime is finite."""
@@ -31,12 +32,12 @@ def split_comp(comp):
     if isinstance(comp, str):
         comp = lt.pattern(comp)
 
-    from itertools import count
     glider_set = gset.extract(comp)
     constell = comp - glider_set.s
     return glider_set, constell
 
-#@profile
+
+# @profile
 def component_info(comp, glider_set, constell):
     # compcost, input, output
     if isinstance(comp, str):
@@ -50,7 +51,7 @@ def component_info(comp, glider_set, constell):
     return compcost, in_apgcode, out_apgcode
 
 
-#@profile
+# @profile
 def apply_tree(pats, tr, queue=None, allow_noncanonical=False, check_rewind=False):
     """Applies the fragment tree in the second argument to one orientation
     of every pattern in the first argument. This minimises the number of
@@ -106,7 +107,8 @@ def apply_tree(pats, tr, queue=None, allow_noncanonical=False, check_rewind=Fals
                         if check_rewind and not rewind_check(constell, glider_set):
                             continue
                         compcost, input, output = component_info(q, glider_set, constell)
-                        qstr = "\n".join(q.rle_string(filename=f"{cgolroot}/tempfiles/pattern{os.getpid()}.rle").split("\n")[2:])
+                        qstr = "\n".join(
+                            q.rle_string(filename=f"{cgolroot}/tempfiles/pattern{os.getpid()}.rle").split("\n")[2:])
                         if queue is not None:
                             queue.put((qstr, compcost, input, output))
                         else:
@@ -128,11 +130,12 @@ def apply_tree(pats, tr, queue=None, allow_noncanonical=False, check_rewind=Fals
                             #     qstr = q.rle_string(filename=f"/home/exa/Documents/lifestuff/tempfiles/pattern{os.getpid()}.rle")
                             #     print(f"Got an xp input with values {(qstr, c, compcost, input, output)}")
                 except (KeyError, ValueError) as e:
-                    #print("got error", e)
+                    # print("got error", e)
                     continue
     return sols
 
-#@profile
+
+# @profile
 def components_to_triples(shinjuku_lines):
     s2s = set()
 
@@ -192,7 +195,8 @@ def components_to_triples(shinjuku_lines):
 
     return triples
 
-#@profile
+
+# @profile
 def triples_to_tree(triples, min_delta=-9999, max_delta=9999):
     replacements = {}
 
@@ -236,7 +240,7 @@ def convert_triples(triples, min_delta=-9999, max_delta=9999):
         with open(triples) as f:
             triples = [l.strip() for l in f]
 
-    if isinstance(triples, list,):
+    if isinstance(triples, list, ):
         triples = triples_to_tree(triples, min_delta=min_delta, max_delta=max_delta)
 
     return triples

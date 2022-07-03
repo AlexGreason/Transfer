@@ -1,8 +1,7 @@
 import operator
-import os
 from pathlib import Path
 
-from cgolutils import cost as synthcost, cata_costs, fetch_if_old
+from cgol_utils import cost as synthcost, cata_costs, fetch_if_old
 
 
 def fetch_oversized_census(file, census):
@@ -28,7 +27,8 @@ def getall_helper(symmetries=None, folder="/home/exa/Documents/lifestuff/censuse
     occurrences = {}
     for symmetry in symmetries:
         if symmetry not in oversized_censuses:
-            fetch_if_old(folder + f"objects{symmetry}.txt", f"https://catagolue.appspot.com/textcensus/b3s23/{symmetry}/")
+            fetch_if_old(folder + f"objects{symmetry}.txt",
+                         f"https://catagolue.appspot.com/textcensus/b3s23/{symmetry}/")
         else:
             fetch_oversized_census(folder + f"objects{symmetry}.txt", f"b3s23/{symmetry}")
             if not Path(folder + f"objects{symmetry}.txt").exists():
@@ -64,13 +64,14 @@ def getall(symmetries=None, folder="/home/exa/Documents/lifestuff/censuses/", bi
     res = []
     listocc.sort(key=operator.itemgetter(1), reverse=True)
     for obj in listocc:
-        if obj[0][0:2] == 'xs' and obj[1] > 0 and (bitcount is None or obj[0][2:3+len(str(bitcount))] == str(bitcount) + "_"):
+        if obj[0][0:2] == 'xs' and obj[1] > 0 and (
+                bitcount is None or obj[0][2:3 + len(str(bitcount))] == str(bitcount) + "_"):
             res.append(obj)
     return res
 
 
 if __name__ == "__main__":
-    #getsortedsls(min_paths, true)
+    # getsortedsls(min_paths, true)
     censusfolder = "/home/exa/Documents/lifestuff/censuses/"
     outfolder = "/home/exa/Documents/lifestuff/updatestuff"
     # outfile = open(outfolder + "unsynthed_xs21_with_soups.txt", "w")

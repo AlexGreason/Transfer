@@ -108,6 +108,7 @@ if __name__ == "__main__":
         if cost(i[0]) < 9999 and len(i[-1]) > 0:
             print(f"known synth for {i[0]} should have already implied {i[-1]}")
     from all_unsynthed_by_soups import getall_helper
+
     occurrences = getall_helper()
     imps = [(i[0], occurrences[i[0]] if i[0] in occurrences else 0, i[1]) for i in imps]
     imps = [x for x in imps if x[0] in stills or x[1] > 0]

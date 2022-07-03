@@ -29,10 +29,12 @@ def write_special_triples(comps, filename, forcewrite=False, parallel=True, nthr
     return representatives
 
 
-def write_triples(filename, forcewrite=False, parallel=True, nthreads=8, onlyminpaths=False, skip_regenerate=False, max_cost=None):
+def write_triples(filename, forcewrite=False, parallel=True, nthreads=8, onlyminpaths=False, skip_regenerate=False,
+                  max_cost=None):
     if onlyminpaths:
         lines = get_useful_components(min_paths, max_cost=max_cost)
         print("Only using components on min-paths!")
     else:
         lines = get_all_components(max_cost=max_cost)
-    return write_special_triples(lines, filename, forcewrite=forcewrite, parallel=parallel, nthreads=nthreads, skip_regenerate=skip_regenerate)
+    return write_special_triples(lines, filename, forcewrite=forcewrite, parallel=parallel, nthreads=nthreads,
+                                 skip_regenerate=skip_regenerate)
