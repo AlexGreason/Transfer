@@ -1,7 +1,7 @@
 import operator
 from pathlib import Path
 
-from cgol_utils import cost as synthcost, cata_costs, fetch_if_old
+from cgol_utils.utils import cata_costs, fetch_if_old, cost
 
 
 def fetch_oversized_census(file, census):
@@ -9,7 +9,7 @@ def fetch_oversized_census(file, census):
 
 
 def getall_helper(symmetries=None, folder="/home/exa/Documents/lifestuff/censuses/", unsynthed=False,
-                  usecatacosts=False, catagolue_costs=None, oversized_censuses=None):
+                  usecatacosts=False, catagolue_costs=None, oversized_censuses=("D8_1",)):
     if symmetries is None:
         symmetries = ["C1", "G1", "D8_1", "D8_4", "C4_4", "8x32", "D4_+2", "D4_+1", "D4_x4", "D4_x1", "D2_+1", "D4_+4",
                       "D2_+2", "D2_x", "4x64", "C2_1", "C4_1", "1x256", "C2_4", "C2_2", "2x128"]
@@ -22,7 +22,7 @@ def getall_helper(symmetries=None, folder="/home/exa/Documents/lifestuff/censuse
                 return catagolue_costs[code]
             else:
                 return 9999
-        return synthcost(code)
+        return cost(code)
 
     occurrences = {}
     for symmetry in symmetries:
@@ -40,7 +40,7 @@ def getall_helper(symmetries=None, folder="/home/exa/Documents/lifestuff/censuse
                 parts = line.split(',')
                 code = parts[0].strip('"')
                 if ('megasized' not in code) and ('messless' not in code) and ('methuselah' not in code) \
-                        and code is not None and (costof(code) == 9999 or not unsynthed):
+                        and code is not None and (costof(code) > 999 or not unsynthed):
                     try:
                         count = int(parts[1].strip().strip('"'))
                     except Exception as e:
@@ -74,17 +74,18 @@ if __name__ == "__main__":
     # getsortedsls(min_paths, true)
     censusfolder = "/home/exa/Documents/lifestuff/censuses/"
     outfolder = "/home/exa/Documents/lifestuff/updatestuff"
-    # outfile = open(outfolder + "unsynthed_xs21_with_soups.txt", "w")
-    # objects = getall(symmetries=None, folder=censusfolder, bitcount=21, unsynthed=True, usecatacosts=False,
-    #                  oversized_censuses=["D8_1"])
-    # for obj in objects:
-    #         print(f"{obj[0]} - {obj[1]}")
-    #         outfile.write(f"{obj[0]} {obj[1]}\n")
-    outfile = open(censusfolder + "/all_unsynthed_with_soups.txt", "w")
-    objects = getall(symmetries=None, folder=censusfolder, bitcount=None, unsynthed=True,
-                     usecatacosts=True, catagolue_costs=cata_costs,
-                     oversized_censuses=["D8_1"])
+    outfile = open(outfolder + "unsynthed_xs22_with_soups.txt", "w")
+    objects = getall(symmetries=None, folder=censusfolder, bitcount=22, unsynthed=True, usecatacosts=True,
+                     oversized_censuses=["D8_1"], catagolue_costs=cata_costs)
     for obj in objects:
-        print(f"{obj[0]} - {obj[1]}")
-        outfile.write(f"{obj[0]} {obj[1]}\n")
-    print(f"found {len(objects)} unsynthed")
+            print(f"{obj[0]} - {obj[1]}")
+            outfile.write(f"{obj[0]} {obj[1]}\n")
+    # outfile = open(censusfolder + "/all_unsynthed_with_soups.txt", "w")
+    # objects = getall(symmetries=None, folder=censusfolder, bitcount=None, unsynthed=True,
+    #                  usecatacosts=True, catagolue_costs=cata_costs,
+    #                  oversized_censuses=["D8_1"])
+    # for i, obj in enumerate(objects):
+    #     if i < 1000:
+    #         print(f"{obj[0]} - {obj[1]}")
+    #     outfile.write(f"{obj[0]} {obj[1]}\n")
+    # print(f"found {len(objects)} unsynthed")

@@ -1,4 +1,5 @@
-from cgol_utils import cost, expensive_stills, min_paths, cgolroot
+from cgol_utils.fileutils import parse_objects_file
+from cgol_utils.paths import cgolroot
 
 
 def getimps(sources, targets, links):
@@ -34,17 +35,29 @@ def getlinks_costs(costfile):
     return list(links)
 
 
+def getlinks_txt(path):
+    links = set()
+    for line in open(path, "r"):
+        incode, _, target = line.replace("\n", "").split()
+        links.add((incode, target))
+    return links
+
+
 def getlinks_comps(compfile):
     links = set()
+    i = 0
     with open(compfile, "r") as infile:
         for line in infile:
             line = line.replace("\n", "")
             try:
                 incode, comp, outcode = line.split(">")
                 links.add((incode, outcode))
+                i += 1
+                if i % 1000 == 0:
+                    print(i, len(links))
             except:
                 pass
-    return list(links)
+    return links
 
 
 def getlinks_ecf(compfile):
@@ -57,7 +70,7 @@ def getlinks_ecf(compfile):
                 links.add((incode, outcode))
             except:
                 pass
-    return list(links)
+    return links
 
 
 def enforce_transitive(imps):
@@ -87,15 +100,31 @@ def enforce_transitive(imps):
     return imps
 
 
-if __name__ == "__main__":
-    stills = expensive_stills(min_paths, 21, 999)
+def getlinks(path):
+    print(path)
+    suffix = path.split(".")[-1]
+    if suffix == "sjk":
+        return getlinks_comps(path)
+    if suffix == "ecf":
+        return getlinks_ecf(path)
+    if suffix == "txt":
+        return getlinks_txt(path)
 
+
+if __name__ == "__main__":
+    from cgol_utils.utils import expensive_stills, min_paths, cost
+
+    # stills = expensive_stills(min_paths, 22, 999)
+    xs22codes = parse_objects_file(f"{cgolroot}/censuses/22_bits_strict_apgcodes.txt")
+    stills = [x for x in xs22codes if cost(x) > 999]
     basedir = f"{cgolroot}/transfer"
-    filenames = ["unsynthed-xs21-mindense-0.2-20210918.ecf"]
+    filenames = ["unsynthed-xs22-2023021921.txt"]
     costfiles = [f"{basedir}/{name}" for name in filenames]
-    links = []
+    links = set()
     for f in costfiles:
-        links += getlinks_ecf(f)
+        links = links.union(getlinks(f))
+    print(len(links), "links")
+    links = list(links)
     inputs = set()
     for link in links:
         inputs.add(link[0])
@@ -113,7 +142,7 @@ if __name__ == "__main__":
     imps = [(i[0], occurrences[i[0]] if i[0] in occurrences else 0, i[1]) for i in imps]
     imps = [x for x in imps if x[0] in stills or x[1] > 0]
     imps.sort(key=lambda x: x[1], reverse=True)
-    outfile = "/home/exa/Documents/lifestuff/updatestuff/xs21Implications_all.txt"
+    outfile = "/home/exa/Documents/lifestuff/updatestuff/xs22Implications_all.txt"
     with open(outfile, "w") as out:
         for i in imps:
             res = ", ".join(i[-1])
@@ -121,3 +150,7 @@ if __name__ == "__main__":
                 line = f"{i[0]} ({i[1]} soup{'s' if i[1] != 1 else ''}) implies {res}"
                 print(line)
                 out.write(line + "\n")
+    outfile = "/home/exa/Documents/lifestuff/updatestuff/unsynthed_xs22.txt"
+    with open(outfile, "w") as out:
+        for s in stills:
+            out.write(f"{s}\n")
