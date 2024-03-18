@@ -1,4 +1,5 @@
 import operator
+import os
 from pathlib import Path
 
 from cgol_utils.utils import cata_costs, fetch_if_old, cost
@@ -10,6 +11,7 @@ def fetch_oversized_census(file, census):
 
 def getall_helper(symmetries=None, folder="/home/exa/Documents/lifestuff/censuses/", unsynthed=False,
                   usecatacosts=False, catagolue_costs=None, oversized_censuses=("D8_1",)):
+    os.makedirs(folder, exist_ok=True)
     if symmetries is None:
         symmetries = ["C1", "G1", "D8_1", "D8_4", "C4_4", "8x32", "D4_+2", "D4_+1", "D4_x4", "D4_x1", "D2_+1", "D4_+4",
                       "D2_+2", "D2_x", "4x64", "C2_1", "C4_1", "1x256", "C2_4", "C2_2", "2x128"]
@@ -73,9 +75,10 @@ def getall(symmetries=None, folder="/home/exa/Documents/lifestuff/censuses/", bi
 if __name__ == "__main__":
     # getsortedsls(min_paths, true)
     censusfolder = "/home/exa/Documents/lifestuff/censuses/"
-    outfolder = "/home/exa/Documents/lifestuff/updatestuff"
-    outfile = open(outfolder + "unsynthed_xs22_with_soups.txt", "w")
-    objects = getall(symmetries=None, folder=censusfolder, bitcount=22, unsynthed=True, usecatacosts=True,
+    outfolder = "/home/exa/Documents/lifestuff/updatestuff/"
+    os.makedirs(outfolder, exist_ok=True)
+    outfile = open(outfolder + "all_unsynthed_with_soups.txt", "w")
+    objects = getall(symmetries=None, folder=censusfolder, bitcount=None, unsynthed=True, usecatacosts=False,
                      oversized_censuses=["D8_1"], catagolue_costs=cata_costs)
     for obj in objects:
             print(f"{obj[0]} - {obj[1]}")

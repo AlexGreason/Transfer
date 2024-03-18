@@ -4,20 +4,23 @@ from cgol_utils.paths import cgolroot
 from cgol_utils.utils import min_paths, expensive_stills, cost
 
 if __name__ == "__main__":
-    xs22codes = parse_objects_file(f"{cgolroot}/censuses/22_bits_strict_apgcodes.txt")
     unsynthed_with_soups = parse_objects_file(f"{cgolroot}/censuses/all_unsynthed_with_soups.txt")
     unsynthed_with_soups = [x for x in unsynthed_with_soups if cost(x) > 999]
-    write_improved_synths(min_paths, redundancies=False, forcecheck=xs22codes + unsynthed_with_soups)
-    improved_synths_mosaic(min_paths, redundancies=False, forcecheck=xs22codes + unsynthed_with_soups,
+    write_improved_synths(min_paths, redundancies=False, forcecheck=unsynthed_with_soups)
+    improved_synths_mosaic(min_paths, redundancies=False, forcecheck=unsynthed_with_soups,
                            sidelen=40)
     print("Unsynthed with soups:", len(unsynthed_with_soups))
-    print("Unsynthed xs22s:", len([x for x in xs22codes if cost(x) > 999]))
-    print("Synthed xs22s:", len([x for x in xs22codes if cost(x) < 999]))
-    print("Expensive xs21s:", len(expensive_stills(min_paths, cells=21, cost=21, force_true=True)))
-    print("Expensive xs20s:", len(expensive_stills(min_paths, cells=20, cost=20, force_true=True)))
-    print("Expensive xs19s:", len(expensive_stills(min_paths, cells=19, cost=19, force_true=True)))
-    print("Expensive xs18s:", len(expensive_stills(min_paths, cells=18, cost=18, force_true=True)))
-    print("Expensive xs17s:", len(expensive_stills(min_paths, cells=17, cost=17, force_true=True)))
+    print("Unsynthed xs22s:", len(expensive_stills(min_paths, cells=22, cost=999, force_true=False)))
+    print("Cost >20 xs21s:", len(expensive_stills(min_paths, cells=21, cost=21, force_true=True)))
+    print("Cost >19 xs20s:", len(expensive_stills(min_paths, cells=20, cost=20, force_true=True)))
+    print("Cost >18 xs19s:", len(expensive_stills(min_paths, cells=19, cost=19, force_true=True)))
+    print("Cost >17 xs18s:", len(expensive_stills(min_paths, cells=18, cost=18, force_true=True)))
+    print("Cost >15 xs17s:", len(expensive_stills(min_paths, cells=17, cost=16, force_true=True)))
+    print("Cost >12 xs16s:", len(expensive_stills(min_paths, cells=16, cost=13, force_true=True)))
+    print("Cost >10 xs15s:", len(expensive_stills(min_paths, cells=15, cost=11, force_true=True)))
+    print("Cost >8 xs14s:", len(expensive_stills(min_paths, cells=14, cost=9, force_true=True)))
+    print("Cost >7 xs13s:", len(expensive_stills(min_paths, cells=13, cost=8, force_true=True)))
+    print("Cost >6 xs12s:", len(expensive_stills(min_paths, cells=12, cost=7, force_true=True)))
     # cheaper, catacosts = get_improved(min_paths, trueSLs, forcecheck=xs21codes + unsynthed_with_soups)
     # print(f"{len(cheaper)} improved, including forcechecked")
     # cheaper = [x for x in cheaper if not (x in cata_costs and cost(x) == cata_costs[x])]

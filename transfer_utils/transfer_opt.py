@@ -95,7 +95,6 @@ def run(nthreads, storeall=False, startat=0, chunksize=64, onlyunsynthed=False, 
     stills = []
     if not onlyunsynthed:
         stills = get_sorted_sls(min_paths, trueSLs, cata_costs)
-    stills += parse_objects_file(f"{cgolroot}/censuses/22_bits_strict_apgcodes.txt")
     stills += parse_objects_file(f"{cgolroot}/censuses/all_unsynthed_with_soups.txt")
     stills = sorted(list(set(stills)), key=lambda x: (cost(x), x))
     stills = stills[startat:]
@@ -145,8 +144,10 @@ if __name__ == "__main__":
     # write_triples(triplefile, nthreads=24, forcewrite=True)
     # run(nthreads=22, storeall=False, startat=0, chunksize=512, onlyunsynthed=False, mincost=6)
 
-    run_custom_comps(nthreads=10, storeall=False, startat=0, chunksize=512,
-                     comps=["xs22_bd0uik8z3156>25 -1/14 -5/25 -1/@0r-1 14>xs23_2llmgeioz01243"])
+    # 12/11/23 all-comps all-targets interrupted at Finished 147968/4129440 in 154076 seconds, resqueue size 0
+    run_custom_comps(nthreads=20,
+                     comps="/home/exa/Dropbox/Programming/Personal_Projects/GameOfLife/Shinjuku/shinjuku/comp/qusrc_out.sjk",
+                     storeall=False, startat=0, chunksize=1024)
     # objs = allsls
     # wanted = list(set(objs + parse_objects_file("/home/exa/Documents/lifestuff/censuses/all_unsynthed_with_soups.txt")))
     # collisearch_exa_bash.run(ngliders=2, nthreads=20, targets=objs, wanted=wanted)

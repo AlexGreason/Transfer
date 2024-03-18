@@ -28,6 +28,7 @@ def workerfunc(triples, workqueue, resqueue):
     # 3-glider constellations are already in shinjuku)
     while True:
         task = workqueue.get()
+        print("got task", task)
         if task == "terminate":
             return
         try:
@@ -171,10 +172,10 @@ def add_comps(comp1, comp2):
 def run():
     triplefile = f"{cgolroot}/transfer/triples.txt"
     # prefix = f"{cgolroot}/transfer/all-unsynthed-with-soups-breadthfirst-{get_date_string()}"
-    prefix = f"{cgolroot}/transfer/unsynthed-xs22-{get_date_string()}"
+    prefix = f"{cgolroot}/transfer/simplerecurse-unsynthed-xs22-{get_date_string(hour=True)}"
     outfile = prefix + ".sjk"
     costsfile = prefix + ".txt"
-    write_triples(triplefile, nthreads=20)
+    # write_triples(triplefile, nthreads=22)
     # startindex = 191728
     # target = "xq5_ug1hmgc865da808ad568cgmh1guz124w6yb6w421"
 
@@ -207,7 +208,7 @@ def run():
     stills = [x for x in stills if cost(x) > 999]
     stills = list(set(stills))
     print("%s target objects" % len(stills))
-    synthesise_recurse(triplefile, stills, costsfile, outfile=outfile, nthreads=22, maximum_cost=9999,
+    synthesise_recurse(triplefile, stills, costsfile, outfile=outfile, nthreads=8, maximum_cost=9999,
                        maximum_size=9999,
                        max_size_delta=9999, mindensity=0.15, singlereport=True, hopeless_threshold=9)
     # makemosaic_reachable(outfile, sidelen=30, spacing=300)

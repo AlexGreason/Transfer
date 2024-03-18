@@ -327,9 +327,9 @@ def add_comps(comp1, comp2):
 
 def run():
     # runname = f"unsynthed-maxsizedelta3-mindense0.3-{get_date_string()}"
-    # runname = "expensive-xs14-20-mindense-020"
+    # runname = f"expensive-xs14-21-{get_date_string()}"
     # runname = f"specialrequest-{get_date_string(hour=True, minute=True)}"
-    runname = f"unsynthed-xs22-{get_date_string(hour=True)}"
+    runname = f"unsynthed-xs22-mindense0.23-{get_date_string(hour=True)}"
     # runname = f"unsynthed-withsoups-{get_date_string(hour=True)}"
     # runname = f"unsynthed-mindelta-1-{get_date_string()}"
     triplefile = f"{cgolroot}/transfer/triples.txt"
@@ -351,9 +351,9 @@ def run():
     # stills = list(used_by)
     # stills = [s for s in stills if s.startswith("xs")]
     # for i in range(16):
-    xs22codes = parse_objects_file(f"{cgolroot}/censuses/22_bits_strict_apgcodes.txt")
-    stills = [x for x in xs22codes if cost(x) > 999]
-    # stills += expensive_stills(min_paths, cells=22, cost=999)
+    # xs22codes = parse_objects_file(f"{cgolroot}/censuses/22_bits_strict_apgcodes.txt")
+    # stills = [x for x in xs22codes if cost(x) > 999]
+    stills += expensive_stills(min_paths, cells=22, cost=999)
     # stills += expensive_stills(min_paths, cells=21, cost=999)
     # stills += expensive_stills(min_paths, cells=20, cost=999)
     # stills += expensive_stills(min_paths, cells=14, cost=9, force_true=True)
@@ -363,6 +363,7 @@ def run():
     # stills += expensive_stills(min_paths, cells=18, cost=18, force_true=True)
     # stills += expensive_stills(min_paths, cells=19, cost=19, force_true=True)
     # stills += expensive_stills(min_paths, cells=20, cost=20, force_true=True)
+    # stills += expensive_stills(min_paths, cells=21, cost=21, force_true=True)
     # import random
     # stills = parse_objects_file("/home/exa/Documents/lifestuff/censuses/all_unsynthed_with_soups.txt")
 
@@ -380,9 +381,9 @@ def run():
 
     # stills = [x for x in stills if x in true]
     print("%s target objects" % len(stills))
-    synthesise_recurse(triplefile, stills, costsfile, outfile=outfile, improvefile=improvefile, nthreads=24,
+    synthesise_recurse(triplefile, stills, costsfile, outfile=outfile, improvefile=improvefile, nthreads=22,
                        maximum_cost=9999, maximum_size=9999,
-                       max_size_delta=9999, mindensity=0, singlereport=True, hopeless_threshold=6,
+                       max_size_delta=9999, mindensity=0.23, singlereport=True, hopeless_threshold=6,
                        max_depth=9999, sortbydelta=False, skip_regenerate_triples=True, min_component_size_delta=-9999,
                        max_component_cost=9999, anysynth=True)
     # TODO list (no particular order):
