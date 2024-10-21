@@ -329,8 +329,8 @@ def run():
     # runname = f"unsynthed-maxsizedelta3-mindense0.3-{get_date_string()}"
     # runname = f"expensive-xs14-21-{get_date_string()}"
     # runname = f"specialrequest-{get_date_string(hour=True, minute=True)}"
-    runname = f"unsynthed-xs22-mindense0.23-{get_date_string(hour=True)}"
-    # runname = f"unsynthed-withsoups-{get_date_string(hour=True)}"
+    # runname = f"unsynthed-xs22-mindense0-{get_date_string(hour=True)}"
+    runname = f"unsynthed-c1-withsoups-{get_date_string(hour=True)}"
     # runname = f"unsynthed-mindelta-1-{get_date_string()}"
     triplefile = f"{cgolroot}/transfer/triples.txt"
     prefix = f"{cgolroot}/transfer/{runname}"
@@ -341,8 +341,8 @@ def run():
     # print(f"target initial cost {cost(target)}")
     #
     stills = []
-    # stills = list(set(parse_objects_file("/home/exa/Documents/lifestuff/censuses/all_unsynthed_with_soups.txt")))
-    # stills = [x for x in stills if cost(x) > 999]
+    stills = list(set(parse_objects_file("/home/exa/Documents/lifestuff/updatestuff/c1_unsynthed_with_soups.txt")))
+    stills = [x for x in stills if cost(x) > 999]
     # stills = ["xs21_8kk6pjgozx346", 'xs23_6akg9fgkczx343']
     # stills = [x for x in stills if getpop(x) <= 40]
     # min_paths = dijkstra()
@@ -353,7 +353,7 @@ def run():
     # for i in range(16):
     # xs22codes = parse_objects_file(f"{cgolroot}/censuses/22_bits_strict_apgcodes.txt")
     # stills = [x for x in xs22codes if cost(x) > 999]
-    stills += expensive_stills(min_paths, cells=22, cost=999)
+    # stills += expensive_stills(min_paths, cells=22, cost=999)
     # stills += expensive_stills(min_paths, cells=21, cost=999)
     # stills += expensive_stills(min_paths, cells=20, cost=999)
     # stills += expensive_stills(min_paths, cells=14, cost=9, force_true=True)
@@ -381,10 +381,10 @@ def run():
 
     # stills = [x for x in stills if x in true]
     print("%s target objects" % len(stills))
-    synthesise_recurse(triplefile, stills, costsfile, outfile=outfile, improvefile=improvefile, nthreads=22,
+    synthesise_recurse(triplefile, stills, costsfile, outfile=outfile, improvefile=improvefile, nthreads=20,
                        maximum_cost=9999, maximum_size=9999,
-                       max_size_delta=9999, mindensity=0.23, singlereport=True, hopeless_threshold=6,
-                       max_depth=9999, sortbydelta=False, skip_regenerate_triples=True, min_component_size_delta=-9999,
+                       max_size_delta=9999, mindensity=0.25, singlereport=True, hopeless_threshold=6,
+                       max_depth=9999, sortbydelta=True, skip_regenerate_triples=True, min_component_size_delta=-9999,
                        max_component_cost=9999, anysynth=True)
     # TODO list (no particular order):
     # DONE 1. Move queue management (priority queue and deduplication stuff) into main thread

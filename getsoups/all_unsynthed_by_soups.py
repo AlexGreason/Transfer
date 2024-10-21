@@ -78,8 +78,17 @@ if __name__ == "__main__":
     outfolder = "/home/exa/Documents/lifestuff/updatestuff/"
     os.makedirs(outfolder, exist_ok=True)
     outfile = open(outfolder + "all_unsynthed_with_soups.txt", "w")
-    objects = getall(symmetries=None, folder=censusfolder, bitcount=None, unsynthed=True, usecatacosts=False,
+    objects = getall(symmetries=None, folder=censusfolder, bitcount=None, unsynthed=True, usecatacosts=True,
                      oversized_censuses=["D8_1"], catagolue_costs=cata_costs)
+    # objects = [x for x in objects if cost(x[0]) > 999]
+    for obj in objects:
+            print(f"{obj[0]} - {obj[1]}")
+            outfile.write(f"{obj[0]} {obj[1]}\n")
+
+    outfile = open(outfolder + "c1_unsynthed_with_soups.txt", "w")
+    objects = getall(symmetries=["C1"], folder=censusfolder, bitcount=None, unsynthed=True, usecatacosts=True,
+                     oversized_censuses=None, catagolue_costs=cata_costs)
+    # objects = [x for x in objects if cost(x[0]) > 999]
     for obj in objects:
             print(f"{obj[0]} - {obj[1]}")
             outfile.write(f"{obj[0]} {obj[1]}\n")

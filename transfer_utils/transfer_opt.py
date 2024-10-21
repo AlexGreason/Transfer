@@ -6,7 +6,8 @@ from Shinjuku.shinjuku.transcode import realise_comp, decode_comp, encode_comp
 from cgol_utils.fileutils import parse_objects_file
 from cgol_utils.mosaics import makemosaic
 from cgol_utils.paths import cgolroot
-from cgol_utils.utils import cost, overrides, min_paths, trueSLs, printuses, get_sorted_sls, cata_costs, get_date_string
+from cgol_utils.utils import cost, overrides, min_paths, trueSLs, printuses, get_sorted_sls, cata_costs, \
+    get_date_string, allsls
 from transfer_utils.triples_utils import write_triples, write_special_triples
 from transfer_shared import all_orientations, apply_tree, split_comp, convert_objects, convert_triples
 
@@ -89,13 +90,16 @@ def synthesise_things(triples, objects, outfile, chunksize=64, nthreads=1, store
                             f"to {cost(input, overrides=overrides) + compcost} {usestr} with \n{q.rle_string()}")
 
 
-def run(nthreads, storeall=False, startat=0, chunksize=64, onlyunsynthed=False, mincost=0):
+def run(nthreads, storeall=False, startat=0, chunksize=64, onlyunsynthed=False, onlyc1=False, mincost=0):
     triplefile = f"{cgolroot}/transfer/triples.txt"
     write_triples(triplefile, nthreads=nthreads)
     stills = []
     if not onlyunsynthed:
         stills = get_sorted_sls(min_paths, trueSLs, cata_costs)
-    stills += parse_objects_file(f"{cgolroot}/censuses/all_unsynthed_with_soups.txt")
+    if onlyc1:
+        stills += parse_objects_file(f"{cgolroot}/updatestuff/c1_unsynthed_with_soups.txt")
+    else:
+        stills += parse_objects_file(f"{cgolroot}/updatestuff/all_unsynthed_with_soups.txt")
     stills = sorted(list(set(stills)), key=lambda x: (cost(x), x))
     stills = stills[startat:]
     if mincost > 0:
@@ -138,6 +142,7 @@ def run_custom_comps(nthreads, comps, storeall=False, startat=0, chunksize=64):
 
 if __name__ == "__main__":
     starttime = clock()
+    run(24, storeall=False, startat=0, chunksize=64, onlyunsynthed=True, onlyc1=True, mincost=999)
     # run_custom_comps(nthreads=4, comps=['xs19_j9ari96z11>8 -2 22 -1/-18 5 -13 10//@0L-10 4>xs20_32qj8r9ic'
     #                                     ])
     # triplefile = f"{cgolroot}/transfer/triples.txt"
@@ -145,11 +150,11 @@ if __name__ == "__main__":
     # run(nthreads=22, storeall=False, startat=0, chunksize=512, onlyunsynthed=False, mincost=6)
 
     # 12/11/23 all-comps all-targets interrupted at Finished 147968/4129440 in 154076 seconds, resqueue size 0
-    run_custom_comps(nthreads=20,
-                     comps="/home/exa/Dropbox/Programming/Personal_Projects/GameOfLife/Shinjuku/shinjuku/comp/qusrc_out.sjk",
-                     storeall=False, startat=0, chunksize=1024)
+    # run_custom_comps(nthreads=20,
+    #                  comps="/home/exa/Dropbox/Programming/Personal_Projects/GameOfLife/Shinjuku/shinjuku/comp/qusrc_out.sjk",
+    #                  storeall=False, startat=0, chunksize=1024)
     # objs = allsls
-    # wanted = list(set(objs + parse_objects_file("/home/exa/Documents/lifestuff/censuses/all_unsynthed_with_soups.txt")))
+    # wanted = list(set(parse_objects_file("/home/exa/Documents/lifestuff/censuses/c1_unsynthed_with_soups.txt")))
     # collisearch_exa_bash.run(ngliders=2, nthreads=20, targets=objs, wanted=wanted)
     # triplefile = f"{cgolroot}/transfer/triples.txt"
     # write_triples(triplefile)

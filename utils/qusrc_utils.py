@@ -49,6 +49,7 @@ for x in unique:
 import os
 
 from Shinjuku.shinjuku import lt
+from cgol_utils.paths import cgolroot
 from transfer_utils.transfer_shared import split_comp
 from Shinjuku.shinjuku.transcode import encode_comp, decode_comp, realise_comp
 from Shinjuku.shinjuku.checks import rewind_check
@@ -59,15 +60,18 @@ from cgol_utils.utils import printuses, usecount, allsls, min_paths, used_by, tr
 import multiprocessing as mp
 
 if __name__ == "__main__":
-    filepath = "/home/exa/Dropbox/Programming/C Code/CLion/lifelib/stdout_3block.log"
+    filepath = "/home/exa/Dropbox/Programming/C Code/CLion/lifelib/stdout_5clean_15x15_5.log"
     # outfile = "/home/exa/Dropbox/Programming/Personal_Projects/GameOfLife/Shinjuku/shinjuku/transfer/qusrc_out.sjk"
-    outfile = "/home/exa/Documents/lifestuff/transfer/qusrc_out.sjk"
-    n_gliders = 3
-    target_cost = 2
-    target_pop = 4
+    outfile = "/home/exa/Dropbox/Programming/Personal_Projects/GameOfLife/Shinjuku/shinjuku/comp/qusrc_out.sjk"
+    skip = 300199 + 150899 + 254499 + 625199 + 748496 + 404299 + 636299
+    n_gliders = 5
+    target_cost = 0
+    target_pop = 0
     min_improved = n_gliders + target_cost + 1
     expected_pop = 5 * n_gliders + target_pop
-    targets = expensive_stills(min_paths, cells=None, cost=min_improved, force_true=False)
+    unsynthed_with_soups = parse_objects_file(f"{cgolroot}/updatestuff/c1_unsynthed_with_soups.txt")
+    unsynthed_with_soups = [x for x in unsynthed_with_soups if cost(x) > 999]
+    targets = expensive_stills(min_paths, cells=None, cost=min_improved, force_true=False) + unsynthed_with_soups
     with open(filepath, "r") as f, open(outfile, "a") as compfile:
         synths = f.read()
         synths_split = synths.split("\n\n")
@@ -78,11 +82,20 @@ if __name__ == "__main__":
             i, synth = x
             try:
                 print(i, synth)
-                if lt.pattern(synth).population != expected_pop:
+                pat = lt.pattern(synth)
+                if pat.population != expected_pop:
                     print("overlap")
                     return None
+                evolved = pat[200]
+                bbox = evolved.bounding_box
+                if any(-64 > x > 64 for x in bbox):
+                    print(i, "out of bounds")
+                    return None
+                if evolved.apgcode not in targets:
+                    print(i, "not in targets")
+                    return None
                 glider_set, constell = split_comp(synth)
-                if not rewind_check(constell, glider_set):
+                if not rewind_check(constell, glider_set, ncheck=8):
                     print(i, "not rewindable")
                     return None
                 sjk = encode_comp(synth)
@@ -94,7 +107,9 @@ if __name__ == "__main__":
 
 
         pool = mp.Pool(22)
-        results = pool.imap(handle_candidate, enumerate(synths_split))
+        print(f"Skipping {skip} candidates")
+        print(f"{len(synths_split[skip:])} candidates to process")
+        results = pool.imap(handle_candidate, enumerate(synths_split[skip:]), chunksize=100)
         encoded = [x for x in results if x is not None]
         print(f"{len(encoded)} valid components")
         canonicalized = [(x, realise_comp(x)) for x in encoded]
